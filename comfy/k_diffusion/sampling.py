@@ -1217,7 +1217,7 @@ def sample_sa_solver(model, x, sigmas, extra_args=None, callback=None, disable=F
                                                        noise=0, sigma=sigmas[-1])
 
 @torch.no_grad()
-def sample_sa_solver_pece(model, x, sigmas, extra_args=None, callback=None, disable=False, predictor_order=3, corrector_order=4, tau_func=None, noise_sampler=None):  
+def sample_sa_solver_pece(model, x, sigmas, extra_args=None, callback=None, disable=False, predictor_order=3, corrector_order=4, tau_func=None, noise_sampler=None):
     if len(sigmas) <= 1:
         return x
     return sample_sa_solver(model, x, sigmas, extra_args=extra_args, callback=callback, disable=disable,

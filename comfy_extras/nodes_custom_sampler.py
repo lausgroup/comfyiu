@@ -413,7 +413,7 @@ class SamplerDPMAdaptative:
                                                               "icoeff": icoeff, "dcoeff": dcoeff, "accept_safety": accept_safety, "eta": eta,
                                                               "s_noise":s_noise })
         return (sampler, )
-    
+
 class SamplerSASolver:
     @classmethod
     def INPUT_TYPES(s):
