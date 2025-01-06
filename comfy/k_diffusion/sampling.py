@@ -1211,12 +1211,10 @@ def sample_sa_solver(model, x, sigmas, extra_args=None, callback=None, disable=F
 
     if sigmas[-1] == 0:
         # Denoising step
-        x = model_prev_list[-1]
-    else:
-        x = sa_solver.adams_bashforth_update_few_steps(order=1, x=x, tau=0,
+        return model_prev_list[-1]
+    return sa_solver.adams_bashforth_update_few_steps(order=1, x=x, tau=0,
                                                        model_prev_list=model_prev_list, sigma_prev_list=sigma_prev_list,
                                                        noise=0, sigma=sigmas[-1])
-    return x
 
 @torch.no_grad()
 def sample_sa_solver_pece(model, x, sigmas, extra_args=None, callback=None, disable=False, predictor_order=3, corrector_order=4, tau_func=None, noise_sampler=None):  
