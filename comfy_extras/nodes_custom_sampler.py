@@ -423,7 +423,6 @@ class SamplerSASolver:
                     "eta": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 100.0, "step":0.01, "round": False}),
                     "eta_start_percent": ("FLOAT", {"default": 0.2, "min": 0.0, "max": 1.0, "step": 0.001}),
                     "eta_end_percent": ("FLOAT", {"default": 0.8, "min": 0.0, "max": 1.0, "step": 0.001}),
-                    "noise_device": (["gpu", "cpu"],),
                     }
                 }
     RETURN_TYPES = ("SAMPLER",)
@@ -431,16 +430,16 @@ class SamplerSASolver:
 
     FUNCTION = "get_sampler"
 
-    def get_sampler(self, model, pc_mode, eta, eta_start_percent, eta_end_percent, noise_device):
+    def get_sampler(self, model, pc_mode, eta, eta_start_percent, eta_end_percent):
         model_sampling = model.get_model_object('model_sampling')
         start_sigma = model_sampling.percent_to_sigma(eta_start_percent)
         end_sigma = model_sampling.percent_to_sigma(eta_end_percent)
         tau_func = partial(sa_solver.default_tau_func, eta=eta, eta_start_sigma=start_sigma, eta_end_sigma=end_sigma)
         
         if pc_mode == 'PEC':
-            sampler_name = "sa_solver" if noise_device == "cpu" else "sa_solver_gpu"
+            sampler_name = "sa_solver"
         else:
-            sampler_name = "sa_solver_pece" if noise_device == "cpu" else "sa_solver_pece_gpu"
+            sampler_name = "sa_solver_pece"
         sampler = comfy.samplers.ksampler(sampler_name, {"tau_func": tau_func})
         return (sampler, )
 

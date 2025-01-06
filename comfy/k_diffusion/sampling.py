@@ -1154,7 +1154,8 @@ def sample_sa_solver(model, x, sigmas, extra_args=None, callback=None, disable=F
         end_sigma = model_sampling.percent_to_sigma(0.8)
         tau_func = partial(sa_solver.default_tau_func, eta=1.0, eta_start_sigma=start_sigma, eta_end_sigma=end_sigma)
     tau = tau_func
-    noise_sampler = partial(sa_solver.device_noise_sampler, x=x, noise_device='cpu') if noise_sampler is None else noise_sampler
+    seed = extra_args.get("seed", None)
+    noise_sampler = default_noise_sampler(x, seed=seed) if noise_sampler is None else noise_sampler
     s_in = x.new_ones([x.shape[0]])
 
     sigma_prev_list = []
@@ -1173,7 +1174,7 @@ def sample_sa_solver(model, x, sigmas, extra_args=None, callback=None, disable=F
             corrector_order_used = min(corrector_order, i + 1, len(sigmas) - i + 1)
             
             tau_val = tau(sigma)
-            noise = None if tau_val == 0 else noise_sampler()
+            noise = None if tau_val == 0 else noise_sampler(sigma, sigmas[i + 1])
 
             # Predictor step
             x_p = sa_solver.adams_bashforth_update_few_steps(order=predictor_order_used, x=x, tau=tau_val,
@@ -1221,26 +1222,6 @@ def sample_sa_solver(model, x, sigmas, extra_args=None, callback=None, disable=F
 def sample_sa_solver_pece(model, x, sigmas, extra_args=None, callback=None, disable=False, predictor_order=3, corrector_order=4, tau_func=None, noise_sampler=None):  
     if len(sigmas) <= 1:
         return x
-    return sample_sa_solver(model, x, sigmas, extra_args=extra_args, callback=callback, disable=disable,
-                            predictor_order=predictor_order, corrector_order=corrector_order,
-                            pc_mode="PECE", tau_func=tau_func, noise_sampler=noise_sampler,
-                            )
-
-@torch.no_grad()
-def sample_sa_solver_gpu(model, x, sigmas, extra_args=None, callback=None, disable=False, predictor_order=3, corrector_order=4, tau_func=None, noise_sampler=None):
-    if len(sigmas) <= 1:
-        return x
-    noise_sampler = partial(sa_solver.device_noise_sampler, x=x, noise_device='gpu') if noise_sampler is None else noise_sampler
-    return sample_sa_solver(model, x, sigmas, extra_args=extra_args, callback=callback, disable=disable,
-                            predictor_order=predictor_order, corrector_order=corrector_order,
-                            pc_mode="PEC", tau_func=tau_func, noise_sampler=noise_sampler,
-                            )
-
-@torch.no_grad()
-def sample_sa_solver_pece_gpu(model, x, sigmas, extra_args=None, callback=None, disable=False, predictor_order=3, corrector_order=4, tau_func=None, noise_sampler=None):
-    if len(sigmas) <= 1:
-        return x
-    noise_sampler = partial(sa_solver.device_noise_sampler, x=x, noise_device='gpu') if noise_sampler is None else noise_sampler
     return sample_sa_solver(model, x, sigmas, extra_args=extra_args, callback=callback, disable=disable,
                             predictor_order=predictor_order, corrector_order=corrector_order,
                             pc_mode="PECE", tau_func=tau_func, noise_sampler=noise_sampler,

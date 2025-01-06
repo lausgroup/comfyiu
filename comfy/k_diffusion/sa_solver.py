@@ -175,12 +175,6 @@ def adams_moulton_update_few_steps(order, x, tau, model_prev_list, sigma_prev_li
     x_t = torch.exp(-tau ** 2 * h) * (sigma / sigma_prev) * x + gradient_part + noise_part
     return x_t
 
-def device_noise_sampler(x, noise_device='gpu'):
-    if noise_device == "gpu":
-        return torch.randn_like(x)
-    else:
-        return torch.randn(x.shape, device='cpu').to(x.device)
-
 # Default tau function from https://github.com/scxue/SA-Solver?tab=readme-ov-file#-abstract
 def default_tau_func(sigma, eta, eta_start_sigma, eta_end_sigma):
     if eta == 0:
