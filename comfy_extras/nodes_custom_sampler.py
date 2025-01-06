@@ -435,7 +435,7 @@ class SamplerSASolver:
         start_sigma = model_sampling.percent_to_sigma(eta_start_percent)
         end_sigma = model_sampling.percent_to_sigma(eta_end_percent)
         tau_func = partial(sa_solver.default_tau_func, eta=eta, eta_start_sigma=start_sigma, eta_end_sigma=end_sigma)
-        
+
         if pc_mode == 'PEC':
             sampler_name = "sa_solver"
         else:

@@ -17,27 +17,27 @@ def get_coefficients_exponential_positive(order, interval_start, interval_end, t
     interval_start_cov = (1 + tau ** 2) * interval_start
 
     if order == 0:
-        return (torch.exp(interval_end_cov) 
+        return (torch.exp(interval_end_cov)
                 * (1 - torch.exp(-(interval_end_cov - interval_start_cov)))
                 / ((1 + tau ** 2))
                 )
     elif order == 1:
-        return (torch.exp(interval_end_cov) 
+        return (torch.exp(interval_end_cov)
                 * ((interval_end_cov - 1) - (interval_start_cov - 1) * torch.exp(-(interval_end_cov - interval_start_cov)))
                 / ((1 + tau ** 2) ** 2)
                 )
     elif order == 2:
-        return (torch.exp(interval_end_cov) 
-                * ((interval_end_cov ** 2 - 2 * interval_end_cov + 2) 
-                    - (interval_start_cov ** 2 - 2 * interval_start_cov + 2) 
+        return (torch.exp(interval_end_cov)
+                * ((interval_end_cov ** 2 - 2 * interval_end_cov + 2)
+                    - (interval_start_cov ** 2 - 2 * interval_start_cov + 2)
                     * torch.exp(-(interval_end_cov - interval_start_cov))
                   )
                 / ((1 + tau ** 2) ** 3)
                 )
     elif order == 3:
-        return (torch.exp(interval_end_cov) 
+        return (torch.exp(interval_end_cov)
                 * ((interval_end_cov ** 3 - 3 * interval_end_cov ** 2 + 6 * interval_end_cov - 6)
-                   - (interval_start_cov ** 3 - 3 * interval_start_cov ** 2 + 6 * interval_start_cov - 6) 
+                   - (interval_start_cov ** 3 - 3 * interval_start_cov ** 2 + 6 * interval_start_cov - 6)
                    * torch.exp(-(interval_end_cov - interval_start_cov))
                   )
                 / ((1 + tau ** 2) ** 4)
@@ -53,7 +53,7 @@ def lagrange_polynomial_coefficient(order, lambda_list):
     if order == 0:
         return [[1.0]]
     elif order == 1:
-        return [[1.0 / (lambda_list[0] - lambda_list[1]), -lambda_list[1] / (lambda_list[0] - lambda_list[1])], 
+        return [[1.0 / (lambda_list[0] - lambda_list[1]), -lambda_list[1] / (lambda_list[0] - lambda_list[1])],
                 [1.0 / (lambda_list[1] - lambda_list[0]), -lambda_list[0] / (lambda_list[1] - lambda_list[0])]]
     elif order == 2:
         denominator1 = (lambda_list[0] - lambda_list[1]) * (lambda_list[0] - lambda_list[2])
@@ -79,12 +79,12 @@ def lagrange_polynomial_coefficient(order, lambda_list):
                  (-lambda_list[0] * lambda_list[2] * lambda_list[3]) / denominator2],
 
                 [1.0 / denominator3,
-                 (-lambda_list[0] - lambda_list[1] - lambda_list[3]) / denominator3, 
-                 (lambda_list[0] * lambda_list[1] + lambda_list[0] * lambda_list[3] + lambda_list[1] * lambda_list[3]) / denominator3, 
+                 (-lambda_list[0] - lambda_list[1] - lambda_list[3]) / denominator3,
+                 (lambda_list[0] * lambda_list[1] + lambda_list[0] * lambda_list[3] + lambda_list[1] * lambda_list[3]) / denominator3,
                  (-lambda_list[0] * lambda_list[1] * lambda_list[3]) / denominator3],
 
                 [1.0 / denominator4,
-                 (-lambda_list[0] - lambda_list[1] - lambda_list[2]) / denominator4, 
+                 (-lambda_list[0] - lambda_list[1] - lambda_list[2]) / denominator4,
                  (lambda_list[0] * lambda_list[1] + lambda_list[0] * lambda_list[2] + lambda_list[1] * lambda_list[2]) / denominator4,
                  (-lambda_list[0] * lambda_list[1] * lambda_list[2]) / denominator4]
                 ]
@@ -122,11 +122,11 @@ def adams_bashforth_update_few_steps(order, x, tau, model_prev_list, sigma_prev_
         # ODE case
         # gradient_coefficients[0] += 1.0 * torch.exp(lambda_t) * (h ** 2 / 2 - (h - 1 + torch.exp(-h))) / (ns.marginal_lambda(t_prev_list[-1]) - ns.marginal_lambda(t_prev_list[-2]))
         # gradient_coefficients[1] -= 1.0 * torch.exp(lambda_t) * (h ** 2 / 2 - (h - 1 + torch.exp(-h))) / (ns.marginal_lambda(t_prev_list[-1]) - ns.marginal_lambda(t_prev_list[-2]))
-        gradient_coefficients[0] += (1.0 * torch.exp((1 + tau ** 2) * lambda_t) 
-                                     * (h ** 2 / 2 - (h * (1 + tau ** 2) - 1 + torch.exp((1 + tau ** 2) * (-h))) / ((1 + tau ** 2) ** 2)) 
+        gradient_coefficients[0] += (1.0 * torch.exp((1 + tau ** 2) * lambda_t)
+                                     * (h ** 2 / 2 - (h * (1 + tau ** 2) - 1 + torch.exp((1 + tau ** 2) * (-h))) / ((1 + tau ** 2) ** 2))
                                      / (lambda_prev - lambda_list[1])
                                     )
-        gradient_coefficients[1] -= (1.0 * torch.exp((1 + tau ** 2) * lambda_t) 
+        gradient_coefficients[1] -= (1.0 * torch.exp((1 + tau ** 2) * lambda_t)
                                      * (h ** 2 / 2 - (h * (1 + tau ** 2) - 1 + torch.exp((1 + tau ** 2) * (-h))) / ((1 + tau ** 2) ** 2))
                                      / (lambda_prev - lambda_list[1])
                                     )
@@ -152,7 +152,7 @@ def adams_moulton_update_few_steps(order, x, tau, model_prev_list, sigma_prev_li
     lambda_prev = lambda_list[1] if order >= 2 else t_fn(sigma_prev)
     h = lambda_t - lambda_prev
     gradient_coefficients = get_coefficients_fn(order, lambda_prev, lambda_t, lambda_list, tau)
-    
+
     if order == 2:  ## if order = 2 we do a modification that does not influence the convergence order similar to UniPC. Note: This is used only for few steps sampling.
         # The added term is O(h^3). Empirically we find it will slightly improve the image quality.
         # ODE case
@@ -166,7 +166,7 @@ def adams_moulton_update_few_steps(order, x, tau, model_prev_list, sigma_prev_li
                                      * (h / 2 - (h * (1 + tau ** 2) - 1 + torch.exp((1 + tau ** 2) * (-h)))
                                      / ((1 + tau ** 2) ** 2 * h))
                                     )
-    
+
     for i in range(order):
         gradient_part += gradient_coefficients[i] * model_prev_list[-(i + 1)]
     gradient_part *= (1 + tau ** 2) * sigma * torch.exp(- tau ** 2 * lambda_t)

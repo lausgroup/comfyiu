@@ -1146,7 +1146,7 @@ def sample_deis(model, x, sigmas, extra_args=None, callback=None, disable=None, 
 def sample_sa_solver(model, x, sigmas, extra_args=None, callback=None, disable=False, predictor_order=3, corrector_order=4, pc_mode="PEC", tau_func=None, noise_sampler=None):
     if len(sigmas) <= 1:
         return x
-    
+
     extra_args = {} if extra_args is None else extra_args
     if tau_func is None:
         model_sampling = model.inner_model.model_patcher.get_model_object('model_sampling')
@@ -1172,7 +1172,7 @@ def sample_sa_solver(model, x, sigmas, extra_args=None, callback=None, disable=F
             # Lower order final
             predictor_order_used = min(predictor_order, i, len(sigmas) - i - 1)
             corrector_order_used = min(corrector_order, i + 1, len(sigmas) - i + 1)
-            
+
             tau_val = tau(sigma)
             noise = None if tau_val == 0 else noise_sampler(sigma, sigmas[i + 1])
 
@@ -1183,13 +1183,13 @@ def sample_sa_solver(model, x, sigmas, extra_args=None, callback=None, disable=F
 
             # Evaluation step
             denoised = model(x_p, sigma * s_in, **extra_args)
-            model_prev_list.append(denoised) 
+            model_prev_list.append(denoised)
 
             # Corrector step
             if corrector_order_used > 0:
                 x = sa_solver.adams_moulton_update_few_steps(order=corrector_order_used, x=x, tau=tau_val,
                                                              model_prev_list=model_prev_list, sigma_prev_list=sigma_prev_list,
-                                                             noise=noise, sigma=sigma)                                     
+                                                             noise=noise, sigma=sigma)
             else:
                 x = x_p
 
@@ -1205,7 +1205,7 @@ def sample_sa_solver(model, x, sigmas, extra_args=None, callback=None, disable=F
             if len(model_prev_list) > max(predictor_order, corrector_order):
                 del model_prev_list[0]
                 del sigma_prev_list[0]
- 
+
         if callback is not None:
             callback({'x': x, 'i': i, 'denoised': model_prev_list[-1]})
 
