@@ -20,6 +20,7 @@ def load_extra_path_config(yaml_path):
         is_default = False
         if "is_default" in conf:
             is_default = conf.pop("is_default")
+            folder_paths.models_dir = base_path
         for x in conf:
             for y in conf[x].split("\n"):
                 if len(y) == 0:
