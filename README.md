@@ -269,7 +269,7 @@ For models compatible with Cambricon Extension for PyTorch (torch_mlu). Here's a
 2. Next, install the PyTorch(torch_mlu) following the instructions on the [Installation](https://www.cambricon.com/docs/sdk_1.15.0/cambricon_pytorch_1.17.0/user_guide_1.9/index.html)
 3. Launch ComfyUI by running `python main.py`
 
-### DOCKER
+# DOCKER
 
 This uses the base image nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04 and stable torch version from https://download.pytorch.org/whl/cu126.
 
