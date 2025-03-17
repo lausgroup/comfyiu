@@ -235,24 +235,6 @@ Install the dependencies by opening your terminal inside the ComfyUI folder and:
 
 After this you should have everything installed and can proceed to running ComfyUI.
 
-### DOCKER - NVIDIA
-
-This uses the base image nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04 and stable torch version from https://download.pytorch.org/whl/cu126.
-
-After cloning the repo, run the following command once in bash terminal to build the docker image:
-
-```chmod +x docker-build.sh```
-
-```./docker-build.sh```
-
-After you docker image is built, you can launch ComfyUI by running the following command:
-
-```docker-compose up```
-
-To stop the container, run:
-
-```docker-compose down```
-
 ### Others:
 
 #### Apple Mac silicon
@@ -286,6 +268,28 @@ For models compatible with Cambricon Extension for PyTorch (torch_mlu). Here's a
 1. Install the Cambricon CNToolkit by adhering to the platform-specific instructions on the [Installation](https://www.cambricon.com/docs/sdk_1.15.0/cntoolkit_3.7.2/cntoolkit_install_3.7.2/index.html)
 2. Next, install the PyTorch(torch_mlu) following the instructions on the [Installation](https://www.cambricon.com/docs/sdk_1.15.0/cambricon_pytorch_1.17.0/user_guide_1.9/index.html)
 3. Launch ComfyUI by running `python main.py`
+
+### DOCKER
+
+This uses the base image nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04 and stable torch version from https://download.pytorch.org/whl/cu126.
+
+After cloning the repo, run the following command once in bash terminal to build the docker image:
+
+```chmod +x docker-build.sh```
+
+```./docker-build.sh```
+
+It will prompt you to select you GPU and the pytorch version you want to install. PS use latest for RTX 5000 seriers cards.
+
+Use ``` 1 or 2 ```, to make your selection.
+
+After you docker image is built, you can launch ComfyUI by running the following command:
+
+```docker-compose up```
+
+To stop the container, run:
+
+```docker-compose down```
 
 # Running
 
