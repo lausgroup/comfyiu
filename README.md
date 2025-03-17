@@ -271,7 +271,7 @@ For models compatible with Cambricon Extension for PyTorch (torch_mlu). Here's a
 
 # DOCKER
 
-This uses the base image nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04 and stable torch version from https://download.pytorch.org/whl/cu126.
+FOR Nvidia and AMD supported by ROCm
 
 After cloning the repo, run the following command once in bash terminal to build the docker image:
 
