@@ -185,13 +185,17 @@ def voxel_to_mesh(voxels, threshold=0.5, device=None):
             device=device
         ).reshape(-1, 4)
 
-        all_indices.append(torch.stack([face_indices[:, 0], face_indices[:, 2], face_indices[:, 1]], dim=1))
-        all_indices.append(torch.stack([face_indices[:, 0], face_indices[:, 3], face_indices[:, 2]], dim=1))
+        all_indices.append(torch.stack([face_indices[:, 0], face_indices[:, 1], face_indices[:, 2]], dim=1))
+        all_indices.append(torch.stack([face_indices[:, 0], face_indices[:, 2], face_indices[:, 3]], dim=1))
 
         vertex_count += 4 * num_faces
 
-    vertices = torch.cat(all_vertices, dim=0)
-    faces = torch.cat(all_indices, dim=0)
+    if len(all_vertices) > 0:
+        vertices = torch.cat(all_vertices, dim=0)
+        faces = torch.cat(all_indices, dim=0)
+    else:
+        vertices = torch.zeros((1, 3))
+        faces = torch.zeros((1, 3))
 
     v_min = 0
     v_max = max(voxels.shape)
@@ -202,6 +206,7 @@ def voxel_to_mesh(voxels, threshold=0.5, device=None):
     if scale > 0:
         vertices = vertices / scale
 
+    vertices = torch.fliplr(vertices)
     return vertices, faces
 
 
