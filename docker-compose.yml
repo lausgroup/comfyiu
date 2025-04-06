@@ -1,6 +1,6 @@
 services:
   comfyui_backend:
-    image: comfyui-red-image:nvidia-latest # <-- ADJUST THIS TAG
+    image: comfyui-red-image:nvidia-latest
     container_name: comfyui-red-container
     ports:
       - "8188:8188"
@@ -10,13 +10,11 @@ services:
       - ./output:/app/comfyui/output
       - ./models:/app/comfyui/models
       # Named Volumes for persistent state
+      - comfyui_venv_data:/app/venv
       - comfyui_custom_nodes:/app/comfyui/custom_nodes
-      - comfyui_python_packages:/app/python_user_packages
       - comfyui_user_config:/app/comfyui/user
     environment:
-      - PYTHONUSERBASE=/app/python_user_packages
-      - PATH=/app/python_user_packages/bin:/app/venv/bin:/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      # - TZ=America/New_York
+      - PATH=/app/venv/bin:/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     deploy:
       resources:
         reservations:
@@ -33,6 +31,6 @@ services:
 
 # Named Volume Definitions
 volumes:
+  comfyui_venv_data: {}
   comfyui_custom_nodes: {}
-  comfyui_python_packages: {}
   comfyui_user_config: {}
